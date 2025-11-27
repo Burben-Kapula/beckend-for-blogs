@@ -1,16 +1,14 @@
 const express = require('express')
 const cors = require('cors')
-const app = express()
-
 const blogsRouter = require('./controllers/blogs')
-// const usersRouter = require('./controllers/users')
+const usersRouter = require('./controllers/users') // якщо там лежить login-роут
+
+const app = express()
 
 app.use(cors())
 app.use(express.json())
 
 app.use('/api/blogs', blogsRouter)
-// app.use('/api/users', usersRouter)
-
-// Можна додати /api/login або інші роутери
+app.use('/api', usersRouter) // тепер POST /api/login працює
 
 module.exports = app
