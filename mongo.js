@@ -1,28 +1,28 @@
-const mongoose=require("mangoose")
-mongoose=connect("")
-.then(()=>{
-    console.log("mongoodb connected")
+require("dotenv").config()
+const mongoose = require("mongoose")
+
+const uri = process.env.MONGODB_URI
+
+mongoose
+  .connect(uri)
+  .then(() => {
+    console.log("Connected to MongoDB")
+  })
+  .catch((err) => {
+    console.error("Error connecting to MongoDB:", err.message)
+  })
+
+const newSchema = new mongoose.Schema({
+  email: {
+    type: String,
+    required: true,
+  },
+  password: {
+    type: String,
+    required: true,
+  },
 })
-.catch(()=>{
-    console.log("failed")
-})
 
+const collection = mongoose.model("collection", newSchema)
 
-const newSchema=new mongoose.Schema({
-    email:{
-        type:String,
-        require:true
-
-    },
-    password:{
-        type:String,
-        require:true
-
-    }
-})
-
-const collection = mongoose.mode("collection",newSchema)
-
-
-
-module.exports=collection
+module.exports = collection
