@@ -1,7 +1,8 @@
-const app = require('./app') // Імпорт основного додатка
+// backend/index.js
+const app = require('./app')
 const http = require('http')
 const config = require('./utils/config')
-const logger = require('./utils/logger') // За потребою для логування
+const logger = require('./utils/logger')
 const mongoose = require('mongoose')
 
 mongoose.set('strictQuery', false)
@@ -14,10 +15,8 @@ mongoose.connect(config.MONGODB_URI)
   })
   .catch((error) => {
     logger.error('error connecting to MongoDB:', error.message)
-    // Додамо вихід з процесу, якщо не вдалося підключитися до БД
     process.exit(1)
   })
-
 
 const server = http.createServer(app)
 
