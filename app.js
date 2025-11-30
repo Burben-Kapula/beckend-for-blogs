@@ -2,7 +2,7 @@ const express = require("express")
 const cors = require("cors")
 
 const blogsRouter = require("./controllers/blogs")
-const usersRouter = require("./controllers/users")
+const usersRouter = require("./controllers/login")
 const collection = require("./mongo")
 
 const app = express()
