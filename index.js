@@ -2,6 +2,22 @@ const app = require('./app') // Імпорт основного додатка
 const http = require('http')
 const config = require('./utils/config')
 const logger = require('./utils/logger') // За потребою для логування
+const mongoose = require('mongoose')
+
+mongoose.set('strictQuery', false)
+
+logger.info('connecting to', config.MONGODB_URI)
+
+mongoose.connect(config.MONGODB_URI)
+  .then(() => {
+    logger.info('connected to MongoDB')
+  })
+  .catch((error) => {
+    logger.error('error connecting to MongoDB:', error.message)
+    // Додамо вихід з процесу, якщо не вдалося підключитися до БД
+    process.exit(1)
+  })
+
 
 const server = http.createServer(app)
 

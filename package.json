@@ -10,12 +10,12 @@
     "test": "tests"
   },
   "scripts": {
-    "start": "node index.js",          
-    "dev": "nodemon index.js",         
-    "test": "jest --verbose",          
-    "lint": "eslint .",                
-    "build": "echo No build step",     
-    "migrate": "echo No migrate step"  
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "jest --verbose",
+    "lint": "eslint .",
+    "build": "echo No build step",
+    "migrate": "echo No migrate step"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
@@ -25,6 +25,7 @@
     "express": "^5.1.0",
     "jest": "^30.2.0",
     "jsonwebtoken": "^9.0.2",
+    "mongodb": "^7.0.0",
     "mongoose": "^9.0.0",
     "nodemon": "^3.1.11",
     "supertest": "^7.1.4"

@@ -41,7 +41,6 @@ app.post("/singup",async(req,res)=>{
 })
 
 
-app.listen(8000,()=>{console.log('port connected')})
 
 // API‑маршрути
 app.use("/api/blogs", blogsRouter)
