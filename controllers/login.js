@@ -1,15 +1,26 @@
-const router = require('express').Router()
+const router = require("express").Router()
+const collection = require("../mongo")
 
-// POST /api/login
-router.post('/login', async (req, res) => {
-  const { username, password } = req.body
+// ЛОГІН
+router.post("/login", async (req, res) => {
+  const { email, password } = req.body
 
-  // TODO: тут перевірка користувача в базі, порівняння пароля, видача токена
-  // Поки що повернемо просто ехо, щоб перевірити зв'язок
-  res.json({
-    message: 'login ok',
-    username,
-  })
+  try {
+    const user = await collection.findOne({ email })
+
+    if (!user) {
+      return res.json({ status: "no-user" }) // користувача не існує
+    }
+
+    if (user.password !== password) {
+      return res.json({ status: "wrong-password" })
+    }
+
+    return res.json({ status: "ok" })
+  } catch (e) {
+    console.error(e)
+    return res.status(500).json({ status: "error" })
+  }
 })
 
 module.exports = router
