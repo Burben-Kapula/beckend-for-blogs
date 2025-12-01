@@ -17,12 +17,12 @@ app.get("/",cors(),(req,res)=>{
 
 })
 app.post("/singup",async(req,res)=>{
-    const{email,password,name}=req.body
+    const{name,email,password}=req.body
 
     const data={
+        name:name,
         email:email,
-        password:password,
-        name:name
+        password:password
     }
 
     try{
