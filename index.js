@@ -1,16 +1,9 @@
-const express = require('express')
-const cors = require('cors')
-const authMiddleware = require('./utils/authMiddleware') // якщо він є
+const http = require('http')
+const app = require('./app')  // або './index', './server' – подивись як там
 
-const app = express()
+const server = http.createServer(app)
 
-app.use(cors())
-app.use(express.json())
-
-// ПУБЛІЧНІ РОУТИ (без токену)
-app.use('/api/auth', require('./controllers/auth'))
-
-// ЗАХИЩЕНІ РОУТИ (з токеном)
-app.use('/api/blogs', authMiddleware, require('./controllers/blogs'))
-
-module.exports = app
+const PORT = process.env.PORT || 3003
+server.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`)
+})
