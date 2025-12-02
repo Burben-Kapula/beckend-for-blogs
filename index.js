@@ -1,26 +1,16 @@
-// backend/index.js
-const app = require('./app')
-const http = require('http')
-const config = require('./utils/config')
-const logger = require('./utils/logger')
-const mongoose = require('mongoose')
+const express = require('express')
+const cors = require('cors')
+const authMiddleware = require('./utils/authMiddleware') // якщо він є
 
-mongoose.set('strictQuery', false)
+const app = express()
 
-logger.info('connecting to', config.MONGODB_URI)
+app.use(cors())
+app.use(express.json())
 
-mongoose.connect(config.MONGODB_URI)
-  .then(() => {
-    logger.info('connected to MongoDB')
-  })
-  .catch((error) => {
-    logger.error('error connecting to MongoDB:', error.message)
-    process.exit(1)
-  })
+// ПУБЛІЧНІ РОУТИ (без токену)
+app.use('/api/auth', require('./controllers/auth'))
 
-const server = http.createServer(app)
+// ЗАХИЩЕНІ РОУТИ (з токеном)
+app.use('/api/blogs', authMiddleware, require('./controllers/blogs'))
 
-const PORT = config.PORT || 3001
-server.listen(PORT, () => {
-  logger.info(`Server running on port ${PORT}`)
-})
+module.exports = app

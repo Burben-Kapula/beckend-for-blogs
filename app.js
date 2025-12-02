@@ -1,19 +1,16 @@
-const jwt = require('jsonwebtoken')
+const express = require('express')
+const cors = require('cors')
+const authMiddleware = require('./utils/authMiddleware') // якщо він є
 
-const authMiddleware = (req, res, next) => {
-  const auth = req.get('authorization')
-  if (!auth || !auth.toLowerCase().startsWith('bearer ')) {
-    return res.status(401).json({ error: 'token missing' })
-  }
+const app = express()
 
-  const token = auth.substring(7)
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'DEV_SECRET')
-    req.user = decoded
-    next()
-  } catch (err) {
-    return res.status(401).json({ error: 'token invalid' })
-  }
-}
+app.use(cors())
+app.use(express.json())
 
-module.exports = authMiddleware
+// ПУБЛІЧНІ РОУТИ (без токену)
+app.use('/api/auth', require('./controllers/auth'))
+
+// ЗАХИЩЕНІ РОУТИ (з токеном)
+app.use('/api/blogs', authMiddleware, require('./controllers/blogs'))
+
+module.exports = app
