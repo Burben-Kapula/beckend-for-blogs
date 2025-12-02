@@ -1,26 +1,40 @@
-const router = require("express").Router()
-const collection = require("../mongo")
+const router = require('express').Router()
 
-// ЛОГІН
-router.post("/login", async (req, res) => {
-  const { email, password } = req.body
+// POST /api/login
+router.post('/login', async (req, res) => {
+  const { username, password } = req.body
 
-  try {
-    const user = await collection.findOne({ email })
-
-    if (!user) {
-      return res.json({ status: "no-user" }) // користувача не існує
-    }
-
-    if (user.password !== password) {
-      return res.json({ status: "wrong-password" })
-    }
-
-    return res.json({ status: "ok" })
-  } catch (e) {
-    console.error(e)
-    return res.status(500).json({ status: "error" })
-  }
+  // TODO: тут перевірка користувача в базі, порівняння пароля, видача токена
+  // Поки що повернемо просто ехо, щоб перевірити зв'язок
+  res.json({
+    message: 'login ok',
+    username,
+  })
 })
 
 module.exports = router
+
+
+
+
+import { useLocation, useNavigate } from "react-router-dom"
+
+function Home() {
+  const location = useLocation()
+  const navigate = useNavigate()
+  const email = location.state?.id
+
+  if (!email) {
+    // якщо зайшли напряму без логіну – повернути на /
+    navigate("/")
+    return null
+  }
+
+  return (
+    <div>
+      <h1>Hello {email}, welcome to my web site</h1>
+    </div>
+  )
+}
+
+export default Home
