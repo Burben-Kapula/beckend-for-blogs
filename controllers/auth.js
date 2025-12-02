@@ -84,9 +84,12 @@ router.post('/login', async (req, res) => {
       email: user.email,
       id: user._id.toString()
     })
-  } catch (err) {
-    console.error(err)
-    res.status(500).json({ error: 'server error' })
+  }  catch (err) {
+    console.error('REGISTER ERROR:', err)
+    res.status(500).json({
+      error: 'server error',
+      details: err.message,
+    })
   }
 })
 
