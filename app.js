@@ -7,6 +7,11 @@ const app = express()
 app.use(cors())
 app.use(express.json())
 
+// Health check for Render
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'OK', timestamp: new Date().toISOString() })
+})
+
 // ПУБЛІЧНІ РОУТИ (без токену)
 app.use('/api/auth', require('./controllers/auth'))
 
