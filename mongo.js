@@ -1,20 +1,16 @@
-const mongoose = require("mongoose")
+require('dotenv').config()
+const mongoose = require('mongoose')
 
-const newSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        required:true
-    },
-  email: {
-    type: String,
-    required: true,
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-})
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/blogs'
 
-const collection = mongoose.model("collection", newSchema)
+console.log('Connecting to:', MONGODB_URI)
 
-module.exports = collection
+mongoose.connect(MONGODB_URI)
+  .then(() => {
+    console.log('Connected to MongoDB Atlas')
+  })
+  .catch((error) => {
+    console.error('Error connecting to MongoDB Atlas:', error.message)
+  })
+
+module.exports = mongoose

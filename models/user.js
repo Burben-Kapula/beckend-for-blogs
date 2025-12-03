@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
 const userSchema = new mongoose.Schema({
-  name: {
+  username: {
     type: String,
     required: true,
     minlength: 3,
@@ -13,7 +13,7 @@ const userSchema = new mongoose.Schema({
     match: /.+@.+\..+/,
     unique: true,
   },
-  password: {
+  passwordHash: {
     type: String,
     required: true,
   }
@@ -24,7 +24,7 @@ userSchema.set('toJSON', {
     ret.id = ret._id.toString()
     delete ret._id
     delete ret.__v
-    delete ret.password
+    delete ret.passwordHash
   }
 })
 
