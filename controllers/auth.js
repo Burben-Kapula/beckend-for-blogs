@@ -27,7 +27,13 @@ router.post('/register', async (req, res) => {
 
     const existingUser = await User.findOne({ $or: [{ username }, { email }] })
     if (existingUser) {
-      return res.status(400).json({ error: 'username or email already used' })
+      if (existingUser.username === username && existingUser.email === email) {
+        return res.status(400).json({ error: 'username and email already used' })
+      } else if (existingUser.username === username) {
+        return res.status(400).json({ error: 'username already used' })
+      } else {
+        return res.status(400).json({ error: 'email already used' })
+      }
     }
 
     const saltRounds = 10
