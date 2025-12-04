@@ -56,23 +56,21 @@ router.post('/register', async (req, res) => {
 // POST /api/auth/login
 router.post('/login', async (req, res) => {
   try {
-    const { usernameOrEmail, password } = req.body
-
-    if (!usernameOrEmail || !password) {
-      return res.status(400).json({ error: 'username/email and password are required' })
+    const { email, password } = req.body
+    
+    if (!email || !password) {
+      return res.status(400).json({ error: 'email and password are required' })
     }
 
-    const user = await User.findOne({
-      $or: [{ username: usernameOrEmail }, { email: usernameOrEmail }]
-    })
+    const user = await User.findOne({ email })
 
     if (!user) {
-      return res.status(401).json({ error: 'invalid credentials' })
+      return res.status(401).json({ error: 'user not found' })
     }
 
     const passwordCorrect = await bcrypt.compare(password, user.passwordHash)
     if (!passwordCorrect) {
-      return res.status(401).json({ error: 'invalid credentials' })
+      return res.status(401).json({ error: 'wrong password' })
     }
 
     const userForToken = {
