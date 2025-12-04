@@ -1,6 +1,7 @@
 const router = require('express').Router()
-const Blog = require('../models/blog')
+const Blog = require('../models/blogs')
 const User = require('../models/user')
+const mongoose = require('mongoose')
 
 // GET /api/blogs - отримати всі блоги
 router.get('/', async (req, res) => {
@@ -28,7 +29,7 @@ router.post('/', async (req, res) => {
     const blog = new Blog({
       title,
       content,
-      author: req.user.id
+      author: new mongoose.Types.ObjectId(req.user.id)
     })
 
     const savedBlog = await blog.save()
@@ -52,7 +53,7 @@ router.delete('/:id', async (req, res) => {
     }
 
     // Перевіряємо чи користувач є автором блогу
-    if (blog.author.toString() !== req.user.id) {
+    if (blog.author.toString() !== req.user.id.toString()) {
       return res.status(403).json({ error: 'Not authorized to delete this blog' })
     }
 
