@@ -10,11 +10,12 @@ const authMiddleware = (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'DEV_SECRET')
     req.user = decoded
+    console.log('Auth middleware - user:', decoded) // Debug log
     next()
   } catch (err) {
+    console.error('Auth middleware error:', err)
     return res.status(401).json({ error: 'token invalid' })
   }
 }
-console.log('test')
 
 module.exports = authMiddleware

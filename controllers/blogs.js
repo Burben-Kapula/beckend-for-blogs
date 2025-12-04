@@ -20,22 +20,32 @@ router.get('/', async (req, res) => {
 // POST /api/blogs - створити новий блог
 router.post('/', async (req, res) => {
   try {
+    console.log('Create blog - user:', req.user) // Debug log
+    console.log('Create blog - body:', req.body) // Debug log
+    
     const { title, content } = req.body
     
     if (!title || !content) {
       return res.status(400).json({ error: 'Title and content are required' })
     }
 
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({ error: 'User not authenticated' })
+    }
+
     const blog = new Blog({
       title,
       content,
-      author: new mongoose.Types.ObjectId(req.user.id)
+      author: req.user.id
     })
 
     const savedBlog = await blog.save()
+    console.log('Blog saved:', savedBlog) // Debug log
+    
     const populatedBlog = await Blog.findById(savedBlog._id)
       .populate('author', 'username email')
 
+    console.log('Blog populated:', populatedBlog) // Debug log
     res.status(201).json(populatedBlog)
   } catch (error) {
     console.error('Error creating blog:', error)
