@@ -53,6 +53,41 @@ router.post('/', async (req, res) => {
   }
 })
 
+// PUT /api/blogs/:id - оновити блог
+router.put('/:id', async (req, res) => {
+  try {
+    const { title, content } = req.body
+    
+    if (!title || !content) {
+      return res.status(400).json({ error: 'Title and content are required' })
+    }
+
+    const blog = await Blog.findById(req.params.id)
+    
+    if (!blog) {
+      return res.status(404).json({ error: 'Blog not found' })
+    }
+
+    // Перевіряємо чи користувач є автором блогу
+    if (blog.author.toString() !== req.user.id.toString()) {
+      return res.status(403).json({ error: 'Not authorized to edit this blog' })
+    }
+
+    blog.title = title
+    blog.content = content
+    blog.updatedAt = new Date()
+    
+    const updatedBlog = await blog.save()
+    const populatedBlog = await Blog.findById(updatedBlog._id)
+      .populate('author', 'username email')
+
+    res.json(populatedBlog)
+  } catch (error) {
+    console.error('Error updating blog:', error)
+    res.status(500).json({ error: 'Failed to update blog' })
+  }
+})
+
 // DELETE /api/blogs/:id - видалити блог
 router.delete('/:id', async (req, res) => {
   try {
