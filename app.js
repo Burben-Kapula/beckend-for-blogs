@@ -3,7 +3,6 @@ const cors = require('cors')
 const authMiddleware = require('./utils/authMiddleware') // якщо він є
 
 const app = express()
-
 app.use(cors())
 app.use(express.json())
 
