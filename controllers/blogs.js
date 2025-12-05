@@ -1,15 +1,14 @@
 const router = require('express').Router()
 const Blog = require('../models/blogs')
-const User = require('../models/user')
-const mongoose = require('mongoose')
+const authMiddleware = require('../middleware/authMiddleware')  // ✅ ДОДАНО
 
-// GET /api/blogs - отримати всі блоги
+// GET /api/blogs - отримати всі блоги (публічні)
 router.get('/', async (req, res) => {
   try {
     const blogs = await Blog.find({})
       .populate('author', 'username email')
       .sort({ createdAt: -1 })
-    
+
     res.json(blogs)
   } catch (error) {
     console.error('Error fetching blogs:', error)
@@ -17,14 +16,14 @@ router.get('/', async (req, res) => {
   }
 })
 
-// POST /api/blogs - створити новий блог
-router.post('/', async (req, res) => {
+// POST /api/blogs - створити новий блог (потрібен токен)
+router.post('/', authMiddleware, async (req, res) => {   // ✅ ДОДАНО middleware
   try {
-    console.log('Create blog - user:', req.user) // Debug log
-    console.log('Create blog - body:', req.body) // Debug log
-    
+    console.log('Create blog - user:', req.user)
+    console.log('Create blog - body:', req.body)
+
     const { title, content } = req.body
-    
+
     if (!title || !content) {
       return res.status(400).json({ error: 'Title and content are required' })
     }
@@ -36,16 +35,16 @@ router.post('/', async (req, res) => {
     const blog = new Blog({
       title,
       content,
-      author: req.user.id
+      author: req.user.id        // id з токена
     })
 
     const savedBlog = await blog.save()
-    console.log('Blog saved:', savedBlog) // Debug log
-    
+    console.log('Blog saved:', savedBlog)
+
     const populatedBlog = await Blog.findById(savedBlog._id)
       .populate('author', 'username email')
 
-    console.log('Blog populated:', populatedBlog) // Debug log
+    console.log('Blog populated:', populatedBlog)
     res.status(201).json(populatedBlog)
   } catch (error) {
     console.error('Error creating blog:', error)
@@ -53,17 +52,17 @@ router.post('/', async (req, res) => {
   }
 })
 
-// PUT /api/blogs/:id - оновити блог
-router.put('/:id', async (req, res) => {
+// PUT /api/blogs/:id - оновити блог (потрібен токен)
+router.put('/:id', authMiddleware, async (req, res) => {   // ✅ ДОДАНО middleware
   try {
     const { title, content } = req.body
-    
+
     if (!title || !content) {
       return res.status(400).json({ error: 'Title and content are required' })
     }
 
     const blog = await Blog.findById(req.params.id)
-    
+
     if (!blog) {
       return res.status(404).json({ error: 'Blog not found' })
     }
@@ -76,7 +75,7 @@ router.put('/:id', async (req, res) => {
     blog.title = title
     blog.content = content
     blog.updatedAt = new Date()
-    
+
     const updatedBlog = await blog.save()
     const populatedBlog = await Blog.findById(updatedBlog._id)
       .populate('author', 'username email')
@@ -88,11 +87,11 @@ router.put('/:id', async (req, res) => {
   }
 })
 
-// DELETE /api/blogs/:id - видалити блог
-router.delete('/:id', async (req, res) => {
+// DELETE /api/blogs/:id - видалити блог (потрібен токен)
+router.delete('/:id', authMiddleware, async (req, res) => {   // ✅ ДОДАНО middleware
   try {
     const blog = await Blog.findById(req.params.id)
-    
+
     if (!blog) {
       return res.status(404).json({ error: 'Blog not found' })
     }

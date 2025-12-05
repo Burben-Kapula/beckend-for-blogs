@@ -34,7 +34,7 @@ const blogSchema = new mongoose.Schema({
     default: Date.now,
   }
 })
-console.log('1')
+
 blogSchema.set('toJSON', {
   transform: (doc, ret) => {
     ret.id = ret._id.toString()
