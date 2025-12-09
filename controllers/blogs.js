@@ -109,4 +109,70 @@ router.delete('/:id', authMiddleware, async (req, res) => {   // ✅ ДОДАН�
   }
 })
 
+
+// POST /api/blogs/:id/like - лайк/унлайк блогу
+router.post('/:id/like', authMiddleware, async (req, res) => {
+  try {
+    const blog = await Blog.findById(req.params.id)
+
+    if (!blog) {
+      return res.status(404).json({ error: 'Blog not found' })
+    }
+
+    const userId = req.user.id
+    const index = blog.likes.findIndex(id => id.toString() === userId)
+
+    if (index === -1) {
+      // ще не лайкнув -> додаємо лайк
+      blog.likes.push(userId)
+    } else {
+      // вже лайкнув -> забираємо лайк
+      blog.likes.splice(index, 1)
+    }
+
+    const saved = await blog.save()
+    const populated = await Blog.findById(saved._id)
+      .populate('author', 'username email')
+
+    res.json(populated)
+  } catch (error) {
+    console.error('Error toggling like:', error)
+    res.status(500).json({ error: 'Failed to toggle like' })
+  }
+})
+
+// POST /api/blogs/:id/comments - додати коментар
+router.post('/:id/comments', authMiddleware, async (req, res) => {
+  try {
+    const { text } = req.body
+    if (!text || !text.trim()) {
+      return res.status(400).json({ error: 'Comment text is required' })
+    }
+
+    const blog = await Blog.findById(req.params.id)
+    if (!blog) {
+      return res.status(404).json({ error: 'Blog not found' })
+    }
+
+    blog.comments.push({
+      user: req.user.id,
+      text: text.trim()
+    })
+
+    const saved = await blog.save()
+    const populated = await Blog.findById(saved._id)
+      .populate('author', 'username email')
+      .populate('comments.user', 'username')
+
+    res.status(201).json(populated)
+  } catch (error) {
+    console.error('Error adding comment:', error)
+    res.status(500).json({ error: 'Failed to add comment' })
+  }
+})
+
+
+
+
+
 module.exports = router
