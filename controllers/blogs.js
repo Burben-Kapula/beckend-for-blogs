@@ -1,6 +1,6 @@
 const router = require('express').Router()
 const Blog = require('../models/blogs')
-const authMiddleware = require('../middleware/authMiddleware')  // ✅ ДОДАНО
+const authMiddleware = require('../utils/authMiddleware')  // ✅ ДОДАНО
 
 // GET /api/blogs - отримати всі блоги (публічні)
 router.get('/', async (req, res) => {
