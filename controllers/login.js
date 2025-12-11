@@ -1,7 +1,7 @@
 const router = require('express').Router()
 
 // POST /api/login
-router.post('/login', async (req, res) => {
+router.post('/', async (req, res) => {
   const { name, password } = req.body
 
   // TODO: тут перевірка користувача в базі, порівняння пароля, видача токена
