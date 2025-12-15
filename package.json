@@ -1,32 +1,27 @@
 {
-  "name": "beckend",
+  "name": "4osabeckend",
   "version": "1.0.0",
   "description": "",
-  "license": "ISC",
-  "author": "",
-  "type": "commonjs",
   "main": "index.js",
-  "directories": {
-    "test": "tests"
-  },
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemon index.js",
-    "test": "jest --verbose",
-    "lint": "eslint .",
-    "build": "echo No build step",
-    "migrate": "echo No migrate step"
+    "dev": "node --watch index.js",
+    "test": "node --test",
+    "lint": "eslint ."
   },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
   "dependencies": {
-    "bcrypt": "^6.0.0",
-    "cor": "^0.0.0",
+    "bcryptjs": "^3.0.3",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
-    "express": "^5.1.0",
-    "jest": "^30.2.0",
-    "jsonwebtoken": "^9.0.2",
-    "mongodb": "^7.0.0",
-    "mongoose": "^9.0.0",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.0.0"
+  },
+  "devDependencies": {
+    "cross-env": "^10.1.0",
     "nodemon": "^3.1.11",
     "supertest": "^7.1.4"
   }

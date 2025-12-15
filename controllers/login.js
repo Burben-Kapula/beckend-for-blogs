@@ -1,40 +1,29 @@
-const router = require('express').Router()
+const jwt = require('jsonwebtoken')
+const bcrypt = require('bcryptjs')
+const loginRouter = require('express').Router()
+const User = require('../utils/models/user')
 
-// POST /api/login
-router.post('/', async (req, res) => {
-  const { name, password } = req.body
+loginRouter.post('/', async (request, response) => {
+  const { username, password } = request.body
 
-  // TODO: тут перевірка користувача в базі, порівняння пароля, видача токена
-  // Поки що повернемо просто ехо, щоб перевірити зв'язок
-  res.json({
-    message: 'login ok',
-    name,
-  })
-})
+  const user = await User.findOne({ username })
+  const passwordCorrect =
+    user === null ? false : await bcrypt.compare(password, user.passwordHash)
 
-module.exports = router
-
-
-
-
-import { useLocation, useNavigate } from "react-router-dom"
-
-function Home() {
-  const location = useLocation()
-  const navigate = useNavigate()
-  const email = location.state?.id
-
-  if (!email) {
-    // якщо зайшли напряму без логіну – повернути на /
-    navigate("/")
-    return null
+  if (!(user && passwordCorrect)) {
+    return response.status(401).json({ error: 'invalid username or password' })
   }
 
-  return (
-    <div>
-      <h1>Hello {email}, welcome to my web site</h1>
-    </div>
-  )
-}
+  const userForToken = {
+    username: user.username,
+    id: user._id,
+  }
 
-export default Home
+  const token = jwt.sign(userForToken, process.env.SECRET)
+
+  response
+    .status(200)
+    .send({ token, username: user.username, name: user.name })
+})
+
+module.exports = loginRouter

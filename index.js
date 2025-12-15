@@ -1,10 +1,8 @@
-const http = require('http')
-const mongoose = require('./mongo')
 const app = require('./app')
+const config = require('./utils/config')
 
-const server = http.createServer(app)
+const PORT = config.PORT || 3003
 
-const PORT = process.env.PORT || 3003
-server.listen(PORT, () => {
+app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
